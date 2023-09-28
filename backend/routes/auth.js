@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User')
 const { body, validationResult } = require('express-validator')
-var bcrypt = require('bcryptjs')
-var jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const fetchUser= require('../middleware/fetchuser')
 
 const jwtstring="hari@mohan$jha."
-// Create a User using: POST "/api/auth/createuser". No login required
+// ROUTE1: Create a User using: POST "/api/auth/createuser". No login required
+
 router.post('/createuser',[body('name').isLength({ min: 5 }),
 body('password').isLength({ min: 5 }),
 body('email').isEmail()
@@ -40,7 +42,7 @@ body('email').isEmail()
     }  
 })
 
-// authenticate/login a User using: POST "/api/auth/login". No login required
+// Route2: authenticate/login a User using: POST "/api/auth/login". No login required
 
 router.post("/login",[body('email').isEmail()] ,async (req,res)=>{
     const errors = validationResult(req);
@@ -66,11 +68,21 @@ router.post("/login",[body('email').isEmail()] ,async (req,res)=>{
         console.log(error)
         res.status(500).send(`internal server error ${error}`)
     }
-    
-
-
-
-
 })
+
+// ROUTE-3: get user details using post:api/auth/getuser login required
+router.post("/getuser", fetchUser, async(req,res)=>{        // fetchuser is miidle function that will verify authtoken and return values
+    try {
+        const userId= req.user.id
+        const userDetails = await User.findById(userId).select("-password")     //get all details except password
+        // res.json({userDetails})
+        res.send(userDetails)
+    } catch (error) {
+        console.log(error)
+        res.send('internal server error', error)
+    }
+    
+})
+
 
 module.exports = router
