@@ -42,7 +42,7 @@ body('description').isLength({ min: 5 })
 
 })
 
-// ROUTE3: update a note PUT: /api/notes/updatenote  :Login required
+// ROUTE3: update a note PUT: /api/notes/updatenote/id  :Login required
 router.put('/updatenote/:id', fetchUser,async(req,res)=>{
     try {
         const {title, description, tag} = req.body
@@ -71,8 +71,23 @@ router.put('/updatenote/:id', fetchUser,async(req,res)=>{
         console.log(error)
         res.send('internal server error')   
     }
-    
-
 })
-
+// ROUTE4: delete a note using DELETE: /api/notes/deletenode  :Login required
+router.delete('/deletenode/:id',fetchUser , async (req,res)=>{
+    try {
+        let note = await Note.findById(req.params.id)
+        if(!note){
+            return res.status(404).send('Not Found')
+        }
+        if(note.user.toString() !== req.user.id)
+        {
+            return res.send('Not allowed')
+        }
+        note = await Note.findByIdAndDelete(req.params.id)
+        res.json({success:'note has been deleted'})
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+})
 module.exports = router
