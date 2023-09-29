@@ -7,12 +7,14 @@ import {
   Route
 } from "react-router-dom"
 import { Routes } from "react-router"
+import Alert from "./components/Alert"
 function App() {
   return (
     <>
     <NoteState>
      <Router>
         <Navbar/>
+        <Alert Alert={'Alert'}/>
           <Routes>
           <Route exact path="/" element={<Home />}> 
           </Route>
