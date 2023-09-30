@@ -52,7 +52,6 @@ const NoteState= (props)=>{
         const response = await fetch(uri,options)
           const json = await response.json()
           console.log(json)
-          setNote(json)
         const newNote = notes.filter((note)=>{return note._id!==id})
         setNote(newNote)
     }
