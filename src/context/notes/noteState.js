@@ -1,46 +1,28 @@
 import { useState } from 'react'
 import NoteContext from './noteContext'
-
+import urlJoin from 'url-join';
 const NoteState= (props)=>{
-    const initialnotes=[
-        {
-          "_id": "651717c2c558913709cba9b7",
-          "user": "65151bb430475b1f55795a55",
-          "title": "my title",
-          "description": "first note added",
-          "tag": "general",
-          "date": "2023-09-29T18:30:26.391Z",
-          "__v": 0
-        },
-        {
-            "_id": "651717c2c5589137i9cba9b7",
-            "user": "65151bb430475b1f55795a55",
-            "title": "my title",
-            "description": "first note added",
-            "tag": "general",
-            "date": "2023-09-29T18:30:26.391Z",
-            "__v": 0
-          },
-          {
-            "_id": "651717c2c558913709pba9b7",
-            "user": "65151bb430475b1f55795a55",
-            "title": "my title",
-            "description": "first note added",
-            "tag": "general",
-            "date": "2023-09-29T18:30:26.391Z",
-            "__v": 0
-          },
-          {
-            "_id": "651717c2c558913709cba8b7",
-            "user": "65151bb430475b1f55795a55",
-            "title": "my title",
-            "description": "first note added",
-            "tag": "general",
-            "date": "2023-09-29T18:30:26.391Z",
-            "__v": 0
+    
+    const initialnotes= []
+    const [notes, setNote]= useState(initialnotes)
+      const baseUrl = "http://localhost:5000/"
+    //   get allnotes
+    const getAllNotes = async()=>{
+        const uri = urlJoin(baseUrl,'api/notes/fetchallnotes')
+        const options = {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUxNTFiYjQzMDQ3NWIxZjU1Nzk1YTU1In0sImlhdCI6MTY5NTg4NTU1M30.F1W4SBFMAyUaFLIxXrGM6fUMCWM1ptz3ZGNMRwRJ_ww"
+            }
           }
-      ]
-      const [notes, setNote]= useState(initialnotes)
+        const response = await fetch(uri,options) 
+          const json = await response.json()
+          console.log(json)
+          setNote(json)
+
+    }
+    
     //   add a note
     const addNote = (title,description,tag)=>{
         const note = {
@@ -67,7 +49,7 @@ const NoteState= (props)=>{
 
     }
     return (
-        <NoteContext.Provider value={{notes,addNote,deleteNote,editNote}} >
+        <NoteContext.Provider value={{notes,addNote,deleteNote,editNote,getAllNotes}} >
             {props.children}
         </NoteContext.Provider>
     )
