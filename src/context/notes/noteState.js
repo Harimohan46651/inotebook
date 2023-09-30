@@ -24,18 +24,19 @@ const NoteState= (props)=>{
     }
     
     //   add a note
-    const addNote = (title,description,tag)=>{
-        const note = {
-            "_id": "651717c2c558913709cba9b7",
-            "user": "65151bb430475b1f55795a55",
-            "title": title,
-            "description": description,
-            "tag": tag,
-            "date": "2023-09-29T18:30:26.391Z",
-            "__v": 0
+    const addNote = async(title,description,tag)=>{
+        const uri = urlJoin(baseUrl,`api/notes/addnote`)
+        const options = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUxNTFiYjQzMDQ3NWIxZjU1Nzk1YTU1In0sImlhdCI6MTY5NTg4NTU1M30.F1W4SBFMAyUaFLIxXrGM6fUMCWM1ptz3ZGNMRwRJ_ww"
+            },
+            body: JSON.stringify({title, description, tag})
           }
-          setNote(notes.concat(note))
-
+        const response = await fetch(uri,options)
+          const note = await response.json() 
+        setNote(notes.concat(note))
     }
 
     // delete a node
