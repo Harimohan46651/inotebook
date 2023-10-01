@@ -18,14 +18,13 @@ const NoteState= (props)=>{
           }
         const response = await fetch(uri,options)
           const json = await response.json()
-          console.log(json)
           setNote(json)
 
     }
     
     //   add a note
     const addNote = async(title,description,tag)=>{
-        const uri = urlJoin(baseUrl,`api/notes/addnote`)
+        const uri = urlJoin(baseUrl,'api/notes/addnote')
         const options = {
             method: 'POST',
             headers: {
@@ -35,7 +34,8 @@ const NoteState= (props)=>{
             body: JSON.stringify({title, description, tag})
           }
         const response = await fetch(uri,options)
-          const note = await response.json() 
+        const note = await response.json()
+        console.log(note)
         setNote(notes.concat(note))
     }
 
@@ -57,15 +57,34 @@ const NoteState= (props)=>{
     }
 
     // edit  a note
-    const editNote = (id,title,description,tag)=>{
-        // for(let index =0;index< notes.length;index++){
-        //     const element = notes[index]
-        //     if(element._id===id){
-        //         element.title = title,
-        //         element.description = description,
-        //         element.tag = tag
-        //     }
-        // }
+    const editNote = async(id,title,description,tag)=>{
+        // API call
+        const uri = urlJoin(baseUrl,`api/notes/updatenote/${id}`)
+        const options = {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUxNTFiYjQzMDQ3NWIxZjU1Nzk1YTU1In0sImlhdCI6MTY5NTg4NTU1M30.F1W4SBFMAyUaFLIxXrGM6fUMCWM1ptz3ZGNMRwRJ_ww"
+            },
+            body: JSON.stringify({title, description, tag})
+          }
+        const response = await fetch(uri,options)
+          const json = await response.json()
+          console.log(json)
+          let newNotes = JSON.parse(JSON.stringify(notes))
+
+          // Logic to edit in client  
+        for(let element of newNotes)
+        {
+            if(element._id === id)
+            {
+                element.title= title
+                element.description = description
+                element.tag = tag
+                break
+            }
+        }
+          setNote(newNotes);
     }
     return (
         <NoteContext.Provider value={{notes,addNote,deleteNote,editNote,getAllNotes}} >
