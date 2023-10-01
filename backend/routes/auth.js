@@ -8,7 +8,7 @@ const fetchUser= require('../middleware/fetchuser')
 
 const jwtstring="hari@mohan$jha."
 // ROUTE1: Create a User using: POST "/api/auth/createuser". No login required
-
+ let success = false
 router.post('/createuser',[body('name').isLength({ min: 5 }),
 body('password').isLength({ min: 5 }),
 body('email').isEmail()
@@ -17,12 +17,13 @@ body('email').isEmail()
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() }); // this error will be send if we give wrong vlaue for any field
+        success=false
+      return res.status(400).json({ success,errors: errors.array() }); // this error will be send if we give wrong vlaue for any field
     }
-    let user = await User.findOne({email:req.body.email})
+    let user = await    User.findOne({email:req.body.email})
     if(user)
     {
-        return res.status(400).json({error: 'please give unique email'}) // if user with same email is present then throw error
+        return res.status(400).json({success,error: 'please give unique email'}) // if user with same email is present then throw error
     }
     try{
         var salt = bcrypt.genSaltSync(10);
@@ -34,7 +35,7 @@ body('email').isEmail()
         })
         const jwttoken = jwt.sign({ user: {id:user.id} },jwtstring)
         // res.json(user)
-        res.json({jwttoken})
+        res.json({success,authToken:jwttoken})
     }
     catch(error){
         console.log(error)
@@ -54,15 +55,18 @@ router.post("/login",[body('email').isEmail()] ,async (req,res)=>{
         const user= await User.findOne({email})
         if(!user)
         {
-            return res.status(400).send("please enter correct email and password")
+            success=false
+            return res.status(400).json({success,error:"please enter correct email and password"})
         }
         const passwordcheck= await bcrypt.compare(password, user.password)
         if(!passwordcheck)
         {
-            return res.status(400).send("please enter correct email and password")
+            success=false
+            return res.status(400).json({success,error:"please enter correct email and password"})
         }
         const jwttoken = jwt.sign({ user: {id:user.id} },jwtstring)
-        res.json({jwttoken})
+        success=true
+        res.json({success,authToken:jwttoken})
         
     } catch (error) {
         console.log(error)
