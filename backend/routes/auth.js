@@ -23,18 +23,19 @@ body('email').isEmail()
     let user = await    User.findOne({email:req.body.email})
     if(user)
     {
+        success=false
         return res.status(400).json({success,error: 'please give unique email'}) // if user with same email is present then throw error
     }
     try{
-        var salt = bcrypt.genSaltSync(10);
-        var hashedPassword = bcrypt.hashSync(req.body.password, salt);
+        let salt = bcrypt.genSaltSync(10);
+        let hashedPassword = bcrypt.hashSync(req.body.password, salt);
         user =  await User.create({ // use await to get user
             name: req.body.name,
             password: hashedPassword,
             email: req.body.email
         })
         const jwttoken = jwt.sign({ user: {id:user.id} },jwtstring)
-        // res.json(user)
+        success=true
         res.json({success,authToken:jwttoken})
     }
     catch(error){

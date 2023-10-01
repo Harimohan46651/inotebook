@@ -31,7 +31,7 @@ const Login = () => {
     }
   return (
     <div>
-        <form>
+        <form onSubmit={handleLogin}>
             <div className="mb-3">
                 <label htmlFor="email" className="form-label">Name or Email address</label>
                 <input type="email" className="form-control" name="email" id="email" value={credentials.email} aria-describedby="emailHelp" onChange={handleOnChange}/>    
@@ -40,8 +40,8 @@ const Login = () => {
                 <label htmlFor="password" className="form-label">Password</label>
                 <input type="password" className="form-control" name="password" id="password" value={credentials.password} onChange={handleOnChange}/>
             </div>
-                <button type="submit" className="btn btn-primary" onClick={handleLogin}>Submit</button>
-            </form>
+                <button type="submit" className="btn btn-primary" >Submit</button>
+        </form>
       
     </div>
   )
