@@ -2,15 +2,16 @@ import React, { useContext,useState } from "react";
 import Note from "./Note";
 import NoteContext from "../context/notes/noteContext";
 
-function AddNote() {
+function AddNote(props) {
     const context=useContext(NoteContext)
     const {addNote}= context
     const [note, setNote] = useState({title: "", description: "", tag: ""})
-
+    const {showAlert} = props
     const handleClick = (e)=>{
         e.preventDefault(); // to prevent reload
         addNote(note.title, note.description, note.tag);
         setNote({title: "", description: "", tag: ""})
+        props.showAlert("Success","Added note successfully")
     }
     const onChange = (e)=>{
         setNote({...note, [e.target.name]: e.target.value})    // it means whatever change will be target that will be update here
@@ -34,7 +35,7 @@ function AddNote() {
                
                 <button type="submit" className="btn btn-primary" onClick={handleClick}>Add Note</button>
             </form>
-            <Note/>
+            <Note showAlert={showAlert}/>
         </div>
   );
 }

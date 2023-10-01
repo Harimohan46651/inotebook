@@ -7,6 +7,7 @@ function Noteitem(props) {
   const {deleteNote} = context
   const handleDelete= ()=>{
      deleteNote(note._id) 
+     props.showAlert("Success","deleted successfully")
   }
   return (
     <div className="col-md-3">

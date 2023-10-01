@@ -1,18 +1,30 @@
 import React, { useContext, useEffect, useRef, useState} from "react";
 import NoteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
-function Note() {
+import { useNavigate } from 'react-router-dom'
+function Note(props) {
     const context= useContext(NoteContext)
     const {notes,getAllNotes,editNote} = context
+    // const navigate = useNavigate()
     useEffect(()=>{
+        // if(localStorage.getItem('token'))
+        // {
+        //     getAllNotes()
+        // }
+        // else{
+        //     navigate('/');
+        // }
         getAllNotes()
+        
     }, [])
     const ref = useRef(null)
     const refClose= useRef()
+    const {showAlert} = props
     const [note, setNote] = useState({id:"",etitle: "", edescription: "", etag: "default"})
     const updateNote = (currentNote)=>{
         ref.current.click()
         setNote({id:currentNote._id, etitle:currentNote.title, edescription:currentNote.description,etag:currentNote.tag})
+        showAlert("Success","Note updated")
     }
     const handleClick = (e)=>{
         editNote(note.id,note.etitle,note.edescription,note.etag)
@@ -60,7 +72,7 @@ function Note() {
             <div className="row my-3">
                 <h2>You Notes</h2> 
                 {notes.map((note)=>{
-                    return <Noteitem key={note._id} updateNote={updateNote} note={note}/>  
+                    return <Noteitem key={note._id} updateNote={updateNote} note={note} showAlert={showAlert} />  
                 })}
             </div>
         </>
